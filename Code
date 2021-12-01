@@ -1,0 +1,109 @@
+library(tidyverse)
+library(MASS)
+library(caret)
+library(randomForest)
+library(cowplot)
+library(corrplot) 
+library(leaps)
+library(e1071)
+library(coefplot)
+library(ggthemes)
+library(ggplot2)
+library(grid)
+library(gridExtra)
+library(knitr)
+library(pander)
+library(readxl)
+
+# CaseStudy_2Data
+
+First I load CaseStudy2_data  into a data frame.  
+
+#Loading Data
+employee.df <- read.csv(
+  "https://raw.githubusercontent.com/RonakHamzehlou/MSDS_6306_Doing-Data-Science/Master/Unit%2014%20and%2015%20Case%20Study%202/CaseStudy2-data.csv", 
+  sep = ",", 
+  header = TRUE)
+str(employee.df)
+head(employee.df) 
+
+employee.df[employee.df$Over18 != "Y",]
+employee.df[employee.df$EmployeeCount != 1,]
+employee.df[employee.df$StandardHours != 80,]
+
+emp_clean.df <- employee.df %>% dplyr::select(
+  Age,
+  Attrition,
+  BusinessTravel,
+  DailyRate,
+  Department,
+  DistanceFromHome,
+  Education,
+  EducationField,
+  EnvironmentSatisfaction,
+  Gender,
+  HourlyRate,
+  JobInvolvement,
+  JobLevel,
+  JobRole,
+  JobSatisfaction,
+  MaritalStatus,
+  MonthlyIncome,
+  MonthlyRate,
+  NumCompaniesWorked,
+  OverTime,
+  PercentSalaryHike,
+  PerformanceRating,
+  RelationshipSatisfaction,
+  StockOptionLevel,
+  TotalWorkingYears,
+  TrainingTimesLastYear,
+  WorkLifeBalance,
+  YearsAtCompany,
+  YearsInCurrentRole,
+  YearsSinceLastPromotion,
+  YearsWithCurrManager)
+
+# Missing or "na" values
+table(emp_clean.df %>% is.na())
+
+
+# HISTOGRAM of MonthlyRate
+hist(employee.df$MonthlyIncome, main = "Monthly Income")
+
+# HISTOGRAM of MonthlyRate
+hist(employee.df$MonthlyRate, main = "Monthly Rate")
+
+# HISTOGRAM of HourlyRate
+hist(employee.df$HourlyRate, main = "Hourly Rate")
+
+# HISTOGRAM of DailyRate
+hist(employee.df$DailyRate, main = "Daily Rate")
+
+cor.test(employee.df$MonthlyRate, employee.df$HourlyRate)
+cor.test(employee.df$DailyRate, employee.df$HourlyRate)
+cor.test(employee.df$MonthlyRate, employee.df$DailyRate)
+cor.test(employee.df$MonthlyRate, employee.df$MonthlyIncome)
+cor.test(employee.df$MonthlyIncome, employee.df$HourlyRate)
+cor.test(employee.df$MonthlyIncome, employee.df$DailyRate)
+
+# Attrition vs HourlyRate,DailyRate,MonthlyRate and MonthlyIncome
+boxplot(employee.df$HourlyRate ~ employee.df$Attrition, ylab = "Dollars", main = "Hourly Rate by Attrition")
+boxplot(employee.df$DailyRate ~ employee.df$Attrition, ylab = "Dollars",main = "Daily Rate by Attrition")
+boxplot(employee.df$MonthlyRate ~ employee.df$Attrition, ylab = "Dollars",main = "Monthly Rate by Attrition")
+boxplot(employee.df$MonthlyIncome ~ employee.df$Attrition, ylab = "Dollars",main = "Monthly Income by Attrition")
+
+length(mo_income_yes)
+length(mo_income_no)
+
+emp_clean.df$MonthlyIncome[emp_clean.df$Attrition == "Yes"] -> mo_income_yes
+emp_clean.df$MonthlyIncome[emp_clean.df$Attrition == "No"] -> mo_income_no
+
+hist(mo_income_yes, xlab = "Dollars", main = "Salary for Attrition: Yes")
+hist(mo_income_no, xlab = "Dollars", main = "Salary for Attrition: No")
+
+pie(
+  count(emp_clean_factor.df, AnnualIncome)$n,
+  labels = count(emp_clean_factor.df, AnnualIncome)$AnnualIncome,
+  main = "Annual Income"
+)
